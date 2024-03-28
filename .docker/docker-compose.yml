@@ -2,18 +2,18 @@ version: "3"
 
 services:
     db:
-        image: mysql:8.0.33
-        platform: linux/x86_64
-        command: --default-authentication-plugin=mysql_native_password
-        volumes:
-            - "db_app:/var/lib/mysql"
-        environment:
-            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-            MYSQL_DATABASE: ${MYSQL_DATABASE}
-            MYSQL_USER: ${MYSQL_USER}
-            MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        image: postgres:16.2
+        restart: always
         ports:
-            - 3306:3306
+            - "${DB_PORT}:${DB_PORT}"
+        environment:
+            POSTGRES_PASSWORD: ${DB_PASSWORD}
+            POSTGRES_DB: ${DB_NAME}
+            POSTGRES_HOST: ${DB_HOST}
+            POSTGRES_PORT: ${DB_PORT}
+        container_name: symfony-db
+        volumes:
+            - db_app:/var/lib/postgresql/data
         networks:
             - symfony_app
     php:

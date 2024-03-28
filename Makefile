@@ -1,6 +1,12 @@
-.PHONY: up bash
+.PHONY: up stop down bash
 up:
-	docker/docker-compose up
+	cd .docker && docker-compose up
+
+stop:
+	cd .docker && docker-compose stop
+
+down:
+	cd .docker && docker-compose down
 
 bash:
-	cd docker && docker-compose exec php sh
+	cd .docker && docker-compose exec php sh
