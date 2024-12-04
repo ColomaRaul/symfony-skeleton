@@ -1,39 +1,28 @@
-FROM php:8.4-fpm-alpine
+FROM php:8.3-fpm-alpine
 
+# Copiar configuraciones personalizadas
+COPY conf.d /usr/local/etc/php/conf.d
 COPY php.ini /usr/local/etc/php/conf.d/docker-php-config.ini
 
-RUN apk add --update --no-cache 																					\
-    	linux-headers																								\
-		acl 																										\
-		fcgi 																										\
-		file 																										\
-		gettext 																									\
-		git 																										\
-		gnu-libiconv
+# Instalar dependencias
+RUN apk --update upgrade \
+        && apk add --no-cache acl fcgi file gettext gnu-libiconv autoconf automake make gcc g++ git bash rabbitmq-c rabbitmq-c-dev linux-headers \
+        $PHPIZE_DEPS icu-dev libzip-dev zlib-dev postgresql-dev
 
-RUN set -eux; 																										\
-	apk add --no-cache --virtual .build-deps 																		\
-		$PHPIZE_DEPS 																								\
-		icu-dev 																									\
-		libzip-dev 																									\
-		zlib-dev
+# Instalar extensiones de PECL y habilitarlas
+RUN pecl install apcu-5.1.23 amqp-2.1.1 xdebug-3.3.0 \
+    && docker-php-ext-enable apcu amqp opcache xdebug
 
-RUN docker-php-ext-configure zip 																				&&  \
-	docker-php-ext-install -j$(nproc) 																				\
-		intl 																										\
-		zip
+# Configurar y habilitar extensiones internas
+RUN docker-php-ext-configure zip \
+    && docker-php-ext-install -j$(nproc) intl zip pdo_pgsql
 
-
+# Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-RUN apk add --no-cache --virtual .pgsql-deps postgresql-dev; \
-	docker-php-ext-install -j$(nproc) pdo_pgsql; \
-	apk add --no-cache --virtual .pgsql-rundeps so:libpq.so.5; \
-	apk del .pgsql-deps
 
 RUN mkdir -p /srv/app/var/cache /srv/app/var/log 																&&	\
     setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX /srv/app/var												&& 	\
 	setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX /srv/app/var
 
-
-WORKDIR /var/www
+# Establecer directorio de trabajo
+WORKDIR /var/www/html
