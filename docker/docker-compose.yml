@@ -23,7 +23,7 @@ services:
                 TIMEZONE: ${TIMEZONE}
         container_name: php
         volumes:
-            - ../:/var/www/symfony:cached
+            - ../:/var/www/html:cached
             - symfony_app_var:/var/www/html/var
             - symfony_app_vendor:/var/www/html/vendor
         networks:
@@ -35,7 +35,7 @@ services:
             context: ./nginx
         container_name: server
         volumes:
-            - ../:/var/www/symfony:cached
+            - ../:/var/www/html:cached
             - symfony_app_var:/var/www/html/var
             - symfony_app_vendor:/var/www/html/vendor
         ports:

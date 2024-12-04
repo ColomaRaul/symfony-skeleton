@@ -1,9 +1,15 @@
-.PHONY: up bash init
+.PHONY: up bash init stop down
 up:
 	cd docker && docker-compose up
 
 bash:
 	cd docker && docker-compose exec php sh
+
+stop:
+	cd docker && docker-compose stop
+
+down:
+	cd docker && docker-compose down
 
 init:
 	@docker network create app || true
