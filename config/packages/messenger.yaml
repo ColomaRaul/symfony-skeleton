@@ -11,7 +11,7 @@ framework:
 
         routing:
             # Route your messages to the transports
-            # 'App\Message\YourMessage': async
+            'App\Shared\Application\Command\CommandInterface': async
 
 # when@test:
 #    framework:
