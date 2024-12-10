@@ -3,14 +3,13 @@
 namespace App\Health\Application\GetHealth;
 
 use App\Shared\Application\Query\QueryHandlerInterface;
-use App\Shared\Application\Query\QueryInterface;
 use App\Shared\Application\Query\QueryResponseInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 final class GetHealthQueryHandler implements QueryHandlerInterface
 {
-    public function __invoke(QueryInterface $query): QueryResponseInterface
+    public function __invoke(GetHealthQuery $query): QueryResponseInterface
     {
         return new GetHealthQueryResponse('This is a test!!');
     }

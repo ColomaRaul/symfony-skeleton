@@ -2,3 +2,8 @@ GetHealth:
   path: /health
   controller: App\Health\Infrastructure\Api\GetHealthController
   methods: [GET]
+
+TestHandler:
+  path: /test-handler
+  controller: App\Health\Infrastructure\Api\TestHandlerController
+  methods: [POST]

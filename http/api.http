@@ -1,0 +1,10 @@
+#Test health
+### Get Health
+GET localhost/api/v1/health
+
+
+#Test handler
+### Test handler
+POST localhost/api/v1/test-handler
+Content-Type: application/json
+

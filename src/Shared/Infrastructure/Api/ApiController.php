@@ -8,20 +8,15 @@ use App\Shared\Application\Query\QueryResponseInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
-use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Throwable;
 
 abstract class ApiController extends AbstractController
 {
-    use HandleTrait;
-
     public function __construct(
-        MessageBusInterface $messageBus,
-    )
-    {
-        $this->messageBus = $messageBus;
-    }
+        private readonly MessageBusInterface $queryBus,
+        private readonly MessageBusInterface $commandBus,
+    ) {}
 
     /**
      * @throws Throwable
@@ -29,7 +24,7 @@ abstract class ApiController extends AbstractController
     protected function ask(QueryInterface $query): QueryResponseInterface
     {
         try {
-            return $this->handle($query);
+            return $this->queryBus->dispatch($query);
         } catch (Throwable $e) {
             while ($e instanceof HandlerFailedException) {
                 $e = $e->getPrevious();
@@ -45,7 +40,7 @@ abstract class ApiController extends AbstractController
     protected function dispatch(CommandInterface $command): void
     {
         try {
-            $this->handle($command);
+            $this->commandBus->dispatch($command);
         } catch (Throwable $e) {
             while ($e instanceof HandlerFailedException) {
                 $e = $e->getPrevious();
