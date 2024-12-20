@@ -1,5 +1,7 @@
 .idea/
 
+supervisord.pid
+
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
