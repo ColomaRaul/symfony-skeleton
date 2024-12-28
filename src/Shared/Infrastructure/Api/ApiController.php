@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Messenger\Stamp\HandledStamp;
 use Throwable;
 
 abstract class ApiController extends AbstractController
@@ -24,7 +25,14 @@ abstract class ApiController extends AbstractController
     protected function ask(QueryInterface $query): QueryResponseInterface
     {
         try {
-            return $this->queryBus->dispatch($query);
+            $envelope = $this->queryBus->dispatch($query);
+            $handledStamp = $envelope->last(HandledStamp::class);
+
+            if (!$handledStamp) {
+                throw new \RuntimeException('No handler processed the query.');
+            }
+
+            return $handledStamp->getResult();
         } catch (Throwable $e) {
             while ($e instanceof HandlerFailedException) {
                 $e = $e->getPrevious();

@@ -16,8 +16,6 @@ final class GetHealthController extends ApiController
     {
         $response = $this->ask(new GetHealthQuery());
 
-        return new JsonResponse([
-            'status' => 'UP',
-        ]);
+        return new JsonResponse($response->toArray());
     }
 }

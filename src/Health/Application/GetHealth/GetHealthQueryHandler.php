@@ -11,6 +11,6 @@ final class GetHealthQueryHandler implements QueryHandlerInterface
 {
     public function __invoke(GetHealthQuery $query): QueryResponseInterface
     {
-        return new GetHealthQueryResponse('This is a test!!');
+        return new GetHealthQueryResponse('OK',['message' => 'Is a test!!']);
     }
 }
