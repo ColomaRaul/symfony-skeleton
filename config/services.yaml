@@ -27,10 +27,3 @@ services:
             $queryBus: '@messenger.bus.default'
             $commandBus: '@messenger.bus.command'
         tags: ['controller.service_arguments']
-
-    messenger.transport.symfony_serializer:
-        class: Symfony\Component\Messenger\Transport\Serialization\Serializer
-        arguments:
-            $serializer: '@serializer'
-            $format: 'json'
-            $context: [ ]

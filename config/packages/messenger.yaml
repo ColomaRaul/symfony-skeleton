@@ -7,13 +7,18 @@ framework:
             messenger.bus.default: ~
             messenger.bus.command: ~
 
+        serializer:
+            default_serializer: messenger.transport.symfony_serializer
+            symfony_serializer:
+                format: json
+                context: { }
+
         transports:
             command:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
                 options:
                     exchange:
                         name: 'command_exchange'
-                        serializer: 'messenger.transport.symfony_serializer'
                     queues:
                         command:
                             binding_keys: [ 'command_key' ]
